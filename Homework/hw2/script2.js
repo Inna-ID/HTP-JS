@@ -12,8 +12,8 @@ function mood1(colorsCount) {
     var colors = [ 'красный', 'оранжевый', 'жёлтый', 'зелёный', 'голубой', 'синий', 'фиолетовый' ];
 
     for ( var i =  0; i < colorsCount; i++ ) {
-        var randomNum = randomDiap( 0, colors.length-1 );
-        var colorName = (colors.splice(randomNum, 1)).toString();
+        var randomIndex = randomDiap( 0, colors.length-1 );
+        var colorName = (colors.splice(randomIndex, 1)).toString();
         console.log( colorName );
     }
 }
@@ -24,17 +24,17 @@ function mood1(colorsCount) {
 /// this method does more iterations
 function mood2(colorsCount) {
     var colors = [ 'красный', 'оранжевый', 'жёлтый', 'зелёный', 'голубой', 'синий', 'фиолетовый' ];
-    var usedNumber = {};
+    var usedIndex = {};
     var i = 0;
 
     while(i < colorsCount) {
-    	var randomNum = randomDiap( 0, colors.length-1 );
-    	if(randomNum in usedNumber) {
+    	var randomIndex = randomDiap( 0, colors.length-1 );
+    	if(randomIndex in usedIndex) {
     		continue;
     	}
-    	usedNumber[randomNum] = true;
+    	usedIndex[randomIndex] = true;
     	i++;
-        var colorName = colors[randomNum];
+        var colorName = colors[randomIndex];
         console.log( colorName );
     }
 }
@@ -43,3 +43,6 @@ function mood2(colorsCount) {
 mood1(6);
 console.log('-------');
 mood2(6);
+
+///// before review 
+// randomNum  and usedNumber renamed to randomIndex and usedIndex

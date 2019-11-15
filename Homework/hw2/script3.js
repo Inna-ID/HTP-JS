@@ -30,3 +30,6 @@ function reduceFindVowelsCount(str) {
 console.log(`Vowels count by forEach method ${foreachFindVowelsCount(USERSTRING)}`);
 console.log(`Vowels count by filter method ${filterFindVowelsCount(USERSTRING)}`);
 console.log(`Vowels count by reduce method ${reduceFindVowelsCount(USERSTRING)}`)
+
+//// review
+// the same comments as for the first task
