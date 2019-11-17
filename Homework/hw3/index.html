@@ -2,10 +2,109 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>HW 3</title>
-	<script src="script.js"></script>
+	<title>HW 3</title>	
+	<style>
+		form {
+
+		}
+		form div {
+			display: flex;
+			margin: 5px 0;
+		}
+		form label {
+			width: 80px;
+		}
+		button {
+			padding: 5px 15px;
+		}
+
+		.error input{
+			border-color: #f00;
+		}
+		.error label{
+			color: #f00;
+		}
+
+		.form-wrap {
+			margin-top: 40px;
+			display: none;
+		}
+
+		.result-info {
+			margin-top: 30px;
+		}
+
+	</style>
+
+
+
 </head>
 <body>
 	
+
+	<h1>Drink storage</h1>
+	<button id="add-drink_btn" data-form="add" class="menu-btn">Add drink</button>
+	<button id="drink-info_btn" data-form="info" class="menu-btn">Input drink name to get info</button>
+	<button id="delete-drink_btn" data-form="delete" class="menu-btn">Delete drink</button>
+	<button id="all-drinks-info_btn" data-form="all_info" class="menu-btn">Get info about all drinks</button>
+
+	<div class="form-wrap" data-form="add">
+		<h3>Add drink in storage</h3>
+		<form id="add-drink_form" action="">
+			<div class="field">
+				<label for="add-drink-name_input">Name:</label>
+				<input id="add-drink-name_input" type="text">
+			</div>
+			<div class="field">
+				<label for="add-drink-alc_input">Alcohol:</label>
+				<input id="add-drink-alc_input" type="checkbox">
+			</div>
+			<div class="field">
+				<label for="add-drink-recipe_input">Recipe:</label>
+				<input id="add-drink-recipe_input" type="text">
+			</div>
+			<div>
+				<button type="submit">Add</button>
+			</div>
+		</form>
+	</div>
+
+
+	<div class="form-wrap" data-form="info">
+		<h3>Get drink info by name</h3>
+		<form id="drink-info_form" action="">
+			<div class="field">
+				<label for="info-drink-name_input">Name:</label>
+				<input id="info-drink-name_input" type="text">
+			</div>
+			<div>
+				<button type="submit">Get</button>
+			</div>
+		</form>
+	</div>
+
+
+	<div class="form-wrap" data-form="delete">
+		<h3>Input drink name to delete this drink</h3>
+		<form id="delete-drink-form" action="">
+			<div class="field">
+				<label for="delete-drink-name_input">Name:</label>
+				<input id="delete-drink-name_input" type="text">
+			</div>
+			<div>
+				<button type="submit">Delete</button>
+			</div>
+		</form>
+	</div>
+
+
+	<div class="result-info">
+		
+	</div>
+
+
+
+	<script src="script.js"></script>
+	<script src="index.js"></script>
 </body>
 </html>
