@@ -28,6 +28,29 @@ function removeErrorClass(currentChildrens) {
 	});
 }
 
+//// hide/show forms function ////
+//add an event listener to several elements
+document.querySelectorAll('.menu-btn').forEach( function(item) {
+	item.addEventListener('click', function(event) {
+
+		removeInfoText();
+
+		let formWrapDivs = document.querySelectorAll('.form-wrap');
+		for(let div of formWrapDivs) {
+			div.style.display = 'none';
+		}
+
+		//attr data-form
+		let dataFormBtn = this.dataset.form;
+		// to show needed form
+		for(let div of formWrapDivs) {
+			if(dataFormBtn === div.dataset.form) {
+				div.style.display = 'block';
+			}
+		}
+	})
+});
+
 
 //// addDrink function ////
 function addDrink() {
@@ -72,12 +95,12 @@ function getInfo() {
 	var drinkNameInput = document.getElementById('info-drink-name_input');
 	var drinkName = drinkNameInput.value.trim();
 
+	removeInfoText();
+
 	if(!drinkName) {
 		setError(drinkNameInput);
 		alert('Input drink name');
 	}
-
-	removeInfoText();
 
 	var result = drinkStorage.getValue(drinkName);
 	var textContainer = document.querySelector('.result-info');
@@ -126,7 +149,6 @@ function deleteDrink() {
 
 function getAllInfo() {
 	var drinkNames = drinkStorage.getKeys();
-	//var str = '';
 	var p = document.createElement('p');
 	var textContainer = document.querySelector('.result-info');
 
@@ -162,29 +184,10 @@ document.getElementById('drink-info_form').addEventListener('submit', function(e
 
 
 document.getElementById('all-drink-names_btn').onclick = function() {
-	removeErrorClass(this.children);
-	getAllInfo();	
+	removeInfoText();	
+	let formWrapDivs = document.querySelectorAll('.form-wrap');
+	for(let div of formWrapDivs) {
+		div.style.display = 'none';
+	}
+	getAllInfo();
 }
-
-
-//// hide/show forms function ////
-//add an event listener to multiple elements
-document.querySelectorAll('.menu-btn').forEach( function(item) {
-	item.addEventListener('click', function(event) {
-		removeInfoText();
-
-		let formWrapDivs = document.querySelectorAll('.form-wrap');
-		for(let div of formWrapDivs) {
-			div.style.display = 'none';
-		}
-
-		//attr data-form
-		let dataFormBtn = this.dataset.form;
-		// to show needed form
-		for(let div of formWrapDivs) {
-			if(dataFormBtn === div.dataset.form) {
-				div.style.display = 'block'
-			}
-		}
-	})
-});

@@ -10,10 +10,8 @@ class HashStorage {
 
 	getValue(key) {
 		if(this.storage[key]) {
-			//console.log(this.storage[key])
 			return this.storage[key];
 		} else {
-			//console.log(undefined);
 			return undefined;
 		}
 	}
@@ -23,23 +21,6 @@ class HashStorage {
 	}
 
 	getKeys() {
-		//console.log(Object.keys(this.storage));
 		return Object.keys(this.storage);
-	}
-}
-
-
-var drinks = {
-	'Mojito': {
-		isAlcohol: 'no',
-		recipe: [ 'soda', 'mint' ,'lime']
-	},
-	'Margarita': {
-		isAlcohol: 'yes',
-		recipe: [ 'tequila', 'cointreau' ,'lime juice', 'ice frappe']
-	},
-	'Blue hawaii': {
-		isAlcohol: 'yes',
-		recipe: [ 'rum', 'pineapple juice', 'coconut puree', 'Blue Curacao liquor']
 	}
 }
