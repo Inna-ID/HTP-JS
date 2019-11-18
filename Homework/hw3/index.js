@@ -5,7 +5,7 @@ drinkStorage.addValue('Margarita', {isAlcohol: 'yes', recipe: [ 'tequila', 'coin
 drinkStorage.addValue('Blue hawaii', {isAlcohol: 'yes', recipe: [ 'rum', 'pineapple juice', 'coconut puree', 'Blue Curacao liquor']});
 
 
-
+// auxiliary functions
 function setError(domElement) {
 	domElement.parentNode.classList.add('error');
 }
@@ -14,6 +14,21 @@ function removeInfoText() {
 	document.querySelector('.result-info').innerHTML = '';
 }
 
+function removeErrorClass(currentChildrens) {
+	var fields = [];
+	//find children elements with "field" class name
+	for(var i = 0; i < currentChildrens.length; i++) {
+		if(currentChildrens[i].classList.contains('field')) {
+			fields.push(currentChildrens[i]);
+		}
+	}
+	// remove all error classes
+	[].forEach.call(fields, function(elem) {
+    	elem.classList.remove('error');
+	});
+}
+
+
 //// addDrink function ////
 function addDrink() {
 	var drinkNameInput = document.getElementById('add-drink-name_input');
@@ -21,43 +36,35 @@ function addDrink() {
 	var isAlc = document.getElementById('add-drink-alc_input').checked;
 	var drinkRecipeInput = document.getElementById('add-drink-recipe_input');
 	var recipe = drinkRecipeInput.value;
+	var isError = false;
 
 	if(!drinkName) {
 		setError(drinkNameInput);
+		isError = true;
 		alert('Input drink name');
-	}
-	if(recipe.length === 0) {
-		setError(drinkRecipeInput);
-		alert('Input drink recipe');
 	}
 	if(drinkName && drinkStorage.getKeys().includes(drinkName)){
 		setError(drinkNameInput);
+		isError = true;
 		alert('This drink exist');
 		return;
+	} 
+	if(recipe.length === 0) {
+		setError(drinkRecipeInput);
+		isError = true;
+		alert('Input drink recipe');
 	}
 
-	var recipeArray = recipe.split(',');
-	for(var i = 0; i < recipeArray.length; i++) {
-		recipeArray[i] = recipeArray[i].trim();
-	}
+	if(!isError) {
+		//split up the string to array
+		var recipeArray = recipe.split(',');
+		for(var i = 0; i < recipeArray.length; i++) {
+			recipeArray[i] = recipeArray[i].trim();
+		}
 
-	drinkStorage.addValue(drinkName, {isAlcohol: isAlc ? 'yes': 'no', recipe: recipeArray });
+		drinkStorage.addValue(drinkName, {isAlcohol: isAlc ? 'yes': 'no', recipe: recipeArray });
+	}
 }
-
-
-//// event listener for add drink form by submit form////
-document.getElementById('add-drink_form').addEventListener('submit', function(e) {
-	e.preventDefault();
-
-	var divs = document.getElementsByClassName('field');
-	// remove all error classes
-	[].forEach.call(divs, function(elem) {
-    	elem.classList.remove('error');
-	});
-	//and check for again
-	addDrink();
-});
-
 
 
 //// getInfo function ////
@@ -86,12 +93,12 @@ function getInfo() {
 			if(Array.isArray(result[key])) {
 				var p = document.createElement('p');
 
-				p.innerHTML += `${key}: ${result[key].join(', ')} `;
+				p.innerHTML += `${key}: ${result[key].join(', ')}`;
 				textContainer.appendChild(p);
 			} else {
 				var p = document.createElement(p);
 
-				p.innerHTML += `${key}: ${result[key]} `;
+				p.innerHTML += `${key}: ${result[key]}`;
 				textContainer.appendChild(p);
 			}
 		}
@@ -99,23 +106,64 @@ function getInfo() {
 }
 
 
+//// deleteDrink function ////
+function deleteDrink() {
+	var drinkNameInput = document.getElementById('delete-drink-name_input');
+	var drinkName = drinkNameInput.value.trim();
+
+	if(!drinkName) {
+		setError(drinkNameInput);
+		alert('Input drink name');
+	}
+	else if(drinkName && !drinkStorage.getKeys().includes(drinkName)) {
+		setError(drinkNameInput);
+		alert('This drink not exist');
+	} else {
+		drinkStorage.deleteValue(drinkName);
+		alert(`${drinkName} removed successfully`);
+	}
+}
+
+function getAllInfo() {
+	var drinkNames = drinkStorage.getKeys();
+	//var str = '';
+	var p = document.createElement('p');
+	var textContainer = document.querySelector('.result-info');
+
+	p.innerHTML += drinkNames.join(', ');
+	textContainer.appendChild(p);
+}
+
+
+//// event listener for add drink form by submit form////
+document.getElementById('add-drink_form').addEventListener('submit', function(e) {
+	e.preventDefault();
+
+	removeErrorClass(this.children);
+	//and check again
+	addDrink();
+});
+
+
+//// event listener for delete drink form by submit form////
+document.getElementById('delete-drink-form').addEventListener('submit', function(e) {
+	e.preventDefault();
+	removeErrorClass(this.children);
+	deleteDrink();
+});
+
+
 //// event listener for get info drink form by submit form////
 document.getElementById('drink-info_form').addEventListener('submit', function(e) {
 	e.preventDefault();
-	//найти чилдренов формы, а у них элементы с классом field
-
-	var div = document.getElementsByClassName('field');
-	// remove all error classes
-	[].forEach.call(div, function(elem) {
-    	elem.classList.remove('error');
-	});
+	removeErrorClass(this.children);
 	getInfo();
 });
 
 
-
-document.getElementById('all-drinks-info_btn').onclick = function() {
-	drinkStorage.getKeys();
+document.getElementById('all-drink-names_btn').onclick = function() {
+	removeErrorClass(this.children);
+	getAllInfo();	
 }
 
 
