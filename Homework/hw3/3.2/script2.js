@@ -30,13 +30,28 @@ let userForm = document.getElementById('user-data-form');
 function createForm(form, data) {
 
 	for(let item of data) {
-		for(var key in item) {
-			console.log(item[key]);
-		}
-		console.log('-----');
+			console.log(item);
+      var field = document.createElement('div');
+      // var label = document.createElement('label');
+      // var input = document.createElement('input');
+      var label = `<label>${item.label}</label>`;
+      var input = `<input type="${item.kind}" name="${item.name}"/>`;
+      
 
+      var elementsArr = [label, input];
+
+      form.appendChild(appendChildren(elementsArr, field));
 	}
-
 }
+
+function appendChildren(elementsArr, parentElement) {
+
+  for(let elem of elementsArr) {
+      parentElement.appendChild(elem);
+  }
+  return parentElement;
+}
+
+
 
 createForm(siteForm, formDef1);
