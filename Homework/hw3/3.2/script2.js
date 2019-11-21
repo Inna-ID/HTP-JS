@@ -28,30 +28,110 @@ let userForm = document.getElementById('user-data-form');
 
 
 function createForm(form, data) {
-
 	for(let item of data) {
-			console.log(item);
-      var field = document.createElement('div');
-      // var label = document.createElement('label');
-      // var input = document.createElement('input');
-      var label = `<label>${item.label}</label>`;
-      var input = `<input type="${item.kind}" name="${item.name}"/>`;
+		console.log(item);
       
-
-      var elementsArr = [label, input];
-
-      form.appendChild(appendChildren(elementsArr, field));
+        var DOMElement = '';
+        switch(item.kind) {
+            case 'longtext': DOMElement = createFieldLongText(item.label, item.name); break;
+            case 'shorttext': DOMElement = createFieldShortText(item.label, item.name); break;
+            case 'number': DOMElement = createFieldNumber(item.label, item.name); break;
+            case 'combo':  DOMElement = createFieldSelect(item.label, item.name, item.variants); break;
+            case 'radio':  DOMElement = createFieldRadio(item.label, item.name, item.variants); break;
+            case 'check': DOMElement = createFieldCheckbox(item.label, item.name); break;
+            case 'memo':  DOMElement = createFieldTextarea(item.label, item.name); break;
+            case 'submit': DOMElement = createFieldSubmit(item.label, item.name); break;
+            default: break;
+        }
+      
+        if(DOMElement) {
+            form.appendChild(DOMElement);
+        }
+      
 	}
 }
 
-function appendChildren(elementsArr, parentElement) {
 
-  for(let elem of elementsArr) {
-      parentElement.appendChild(elem);
-  }
-  return parentElement;
+function createFieldLongText(label, name) {
+    var field = document.createElement('div');
+    var tagLabel = `<label>${label}</label>`;
+    var tagInput = `<input type="text" name="${name}" style="width: 350px"/>`;
+
+    field.innerHTML += `${tagLabel}${tagInput}`;
+    return field;
+}
+
+function createFieldShortText(label, name) {
+    var field = document.createElement('div');
+    var tagLabel = `<label>${label}</label>`;
+    var tagInput = `<input type="text" name="${name}" style="width: 150px"/>`;
+
+    field.innerHTML += `${tagLabel}${tagInput}`;
+    return field;
+}
+
+function createFieldNumber(label, name) {
+    var field = document.createElement('div');
+    var tagLabel = `<label>${label}</label>`;
+    var tagInput = `<input type="number" name="${name}" style="width: 80px"/>`;
+
+    field.innerHTML += `${tagLabel}${tagInput}`;
+    return field;
+}
+
+function createFieldSelect(label, name, variants) {
+    var field = document.createElement('div');
+    var tagLabel = `<label>${label}</label>`;
+    var tagSelect = document.createElement('select');
+    tagSelect.setAttribute('name', name);
+
+    var options = '';
+    for(let key of variants) {
+        options += `<option value="${key.value}">${key.text}</option>`
+    }
+
+    tagSelect.innerHTML = `${options}`;
+    field.innerHTML = `${tagLabel}${tagSelect.outerHTML}`;
+    return field;
+}
+
+function createFieldRadio(label, name, variants) {
+    var field = document.createElement('div');
+    var tagLabel = `<label>${label}</label>`;
+
+    var radioButtons = '';
+    for(let key of variants) {
+        radioButtons += `<input type="radio" name="${name}" value="${key.value}"><span>${key.text}</span>`;
+    }
+
+    field.innerHTML = `${tagLabel}${radioButtons}`;
+    return field;
+}
+
+function createFieldCheckbox(label, name) {
+    var field = document.createElement('div');
+    var tagLabel = `<label>${label}</label>`;
+    var tagInput = `<input type="checkbox" name="${name}" checked/>`;
+
+    field.innerHTML += `${tagLabel}${tagInput}`;
+    return field;
+}
+
+function createFieldTextarea(label, name) {
+    var field = document.createElement('div');
+    var tagLabel = `<label style="display: block">${label}</label>`;
+    var tagInput = `<textarea type="checkbox" name="${name}" rows="4" cols="50"/></textarea>`;
+
+    field.innerHTML += `${tagLabel}${tagInput}`;
+    return field;
+}
+
+function createFieldSubmit(label, name) {
+    var field = document.createElement('div');
+    field.innerHTML += `<input type="submit" value="${label.substring(0, label.length - 1)}"/>`;
+    return field;
 }
 
 
-
 createForm(siteForm, formDef1);
+createForm(userForm, formDef2);
