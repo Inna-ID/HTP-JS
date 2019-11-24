@@ -15,6 +15,15 @@ function summ(arr) {
 	return result;
 }
 
-console.log(summ(arr))
+console.log(summ(arr));
 
-//Array.isArray() 
+
+function fibonacci(num) {
+	if(num <=1) {
+		return num;
+	} else {
+		return fibonacci(num -1) + fibonacci(num - 2);
+	}
+}
+
+console.log(fibonacci(1));
