@@ -17,9 +17,7 @@ let siteForm = document.forms['site-data'];
 
 
 function createForm(form, data) {
-	for(let item of data) {
-		console.log(item);
-      
+	for(let item of data) {     
         var DOMElement = '';
         switch(item.kind) {
             case 'longtext': DOMElement = createFieldLongText(item.name); break;
@@ -102,39 +100,83 @@ function createFieldSubmit(name, label) {
 createForm(siteForm, formDef1);
 
 ////// validate
-function validate(input) {
+var isErrorExist = false;
+function validateTextInput(input) {
     if(input.value == '') {
-        setError(input, 'Заполните поле')
+        setError(input, 'Заполните поле');
+        isErrorExist = true;
     } else {
         removeError(input);
+        isErrorExist = false;
+    }
+}
+
+function validateTextInputAll(inputArr) {
+    for(let input of inputArr) {
+        validateTextInput(input);
+    }
+}
+
+function validateRadio() {
+    var radios = document.getElementsByName('payment');
+    var isChecked = false;
+    for(let radio of radios) {
+        if(radio.type == 'radio' && radio.checked) {
+            isChecked = true;
+            removeError(radio);
+            isErrorExist = false;
+        }
+    }
+    if(!isChecked) {
+        setError(radios[0], 'Выберите один из вариантов');
+        isErrorExist = true;
     }
 }
 
 
 function setError(input, textError) {
-    if(input.parentNode.querySelector('span')) {
+    if(input.parentNode.querySelector('.error')) {
         return;
     }
     input.parentNode.classList.add('error');
     let span = document.createElement('span');
     span.innerHTML = textError;
+    span.classList.add('error');
     input.parentNode.appendChild(span);
+
+    // let span = `<span class="error">${textError}</span>`;
+    // input.parentNode.innerHTML += span;
 }
 
 function removeError(input) {
     input.parentNode.classList.remove('error');
-    input.parentNode.querySelector('span').remove();
+    var spanError = input.parentNode.querySelector('.error');
+    if(spanError) {
+        spanError.remove();
+    }
 }
 
 
 siteForm.querySelectorAll('.input-data').forEach( function(item) {
     item.addEventListener('blur', function(e) {
-        validate(e.target);
+        validateTextInput(e.target);
+    });
+});
+
+siteForm.querySelectorAll('input[type=radio][name="payment"]').forEach( function(item) {
+    item.addEventListener('change', function() {
+        validateRadio();
     });
 });
 
 
-
-siteForm.addEventListener('submit', function() {
-    this.reset();
+siteForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var textError = validateTextInputAll(siteForm.querySelectorAll('.input-data'));
+    var radioError = validateRadio();
+    //если нет ошибок
+    if(!textError && !radioError) {
+        e.stopPropagation()
+        this.reset();
+    }
 });
