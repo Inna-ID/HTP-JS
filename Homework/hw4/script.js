@@ -92,12 +92,13 @@ function createFieldTextarea(name, label) {
 }
 
 function createFieldSubmit(name, label) {
-    var TagButton = `<input type="submit" value="${label.substring(0, label.length - 1)}"/>`;
+    var TagButton = `<input type="button" value="${label.substring(0, label.length - 1)}"/>`;
     return TagButton;
 }
 
 
 createForm(siteForm, formDef1);
+
 
 ////// validate
 var isErrorExist = false;
@@ -143,9 +144,6 @@ function setError(input, textError) {
     span.innerHTML = textError;
     span.classList.add('error');
     input.parentNode.appendChild(span);
-
-    // let span = `<span class="error">${textError}</span>`;
-    // input.parentNode.innerHTML += span;
 }
 
 function removeError(input) {
@@ -170,13 +168,11 @@ siteForm.querySelectorAll('input[type=radio][name="payment"]').forEach( function
 });
 
 
-siteForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var textError = validateTextInputAll(siteForm.querySelectorAll('.input-data'));
-    var radioError = validateRadio();
-    //если нет ошибок
-    if(!textError && !radioError) {
-        e.stopPropagation()
-        this.reset();
+siteForm.querySelector('input[type=button]').addEventListener('click', function() {
+    validateTextInputAll(siteForm.querySelectorAll('.input-data'));
+    validateRadio();
+    if(!isErrorExist) {
+        siteForm.reset();
+        siteForm.submit();
     }
 });
