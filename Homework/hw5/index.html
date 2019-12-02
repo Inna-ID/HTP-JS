@@ -3,11 +3,36 @@
 <head>
 	<meta charset="UTF-8">
 	<title>HW 5</title>
-	
+	<style>
+		* {
+			margin: 0;
+		    padding: 0;
+		    box-sizing: border-box;
+		}
+
+		body, html{	
+			height: 100%;
+		    width: 100%;
+		}
+		#image-container {
+			height: 100%;
+			position: relative;
+		}
+		img {
+			position: absolute;
+			opacity: 1;
+
+		}
+		.invisible {
+			opacity: 0;
+		}
+	</style>
 </head>
 <body>
-
-
+	<div id="image-container">
+		<img id="cat-img" src="img/cat_sleeping.jpg" alt="cat">
+	</div>
+	
 	<script src="script.js"></script>
 </body>
 </html>
