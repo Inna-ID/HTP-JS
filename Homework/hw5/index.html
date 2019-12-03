@@ -16,13 +16,21 @@
 		}
 		#image-container {
 			height: 100%;
-			position: relative;
+			/*position: relative;*/
 		}
 		img {
 			position: absolute;
-			opacity: 1;
-
+			cursor: default;
+			z-index: 1;
 		}
+		img:hover {
+			cursor: pointer;
+		}
+		img.mousedown {
+			z-index: 9;
+			cursor: grabbing;
+		}
+
 		#cat-img1 {
 			top: 20px;
 			left: 10px;
@@ -35,9 +43,7 @@
 			top: 150px;
 			left: 340px;
 		}
-		.invisible {
-			opacity: 0;
-		}
+
 	</style>
 </head>
 <body>

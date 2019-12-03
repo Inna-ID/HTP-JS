@@ -1,56 +1,50 @@
 let catDragStart = 'img/cat_draggable.jpg';
 let catDragEnd = 'img/cat_sleeping.jpg';
 
+let shift = {
+	x: 0,
+	y: 0
+}
 
 function dragStart(e) {
-
 	if(e.target.tagName != 'IMG' ) {
 		return;
 	}
-
 	e.target.setAttribute('src', catDragStart);
-	e.target.setAttribute('data-ismoved', 'true');
+	e.target.classList.add('mousedown');
 
-	e.target.style.zIndex = '9';
+	// difference of coordinates relative to the mouse and the top left corner of the image
+	shift.y = e.clientY - e.target.getBoundingClientRect().top;
+	shift.x = e.clientX - e.target.getBoundingClientRect().left;
 }
 
 function dragEnd(e) {
-
 	if(e.target.tagName != 'IMG' ) {
 		return;
 	}
-	
 	e.target.setAttribute('src', catDragEnd);
-	e.target.setAttribute('data-ismoved', 'false');
-	e.target.style.zIndex = '1';
+	e.target.classList.remove('mousedown');
 }
 
 function imageMove(e) {
-	if(e.target.getAttribute('data-ismoved') === 'true') {
-		e.target.style.top = `${e.pageY - 50}px`;
-		e.target.style.left = `${e.pageX - 50}px`;
+	if(e.target.classList.contains('mousedown')) {
+
+		//разница смещения
+		e.target.style.top = `${e.pageY - shift.y}px`;
+		e.target.style.left = `${e.pageX - shift.x}px`;
 	}
 }
 
 
-document.querySelector('#image-container').addEventListener('mousedown', function(e){
-	dragStart(e);
-});
 
+document.querySelector('#image-container').addEventListener('mousedown', dragStart);
+
+//forbid to drag a copy
 document.querySelector('#image-container').addEventListener('dragstart', function(e){
 	e.preventDefault();
 });
 
+document.querySelector('#image-container').addEventListener('mouseup', dragEnd);
+document.querySelector('#image-container').addEventListener('mouseleave', dragEnd);
 
-document.querySelector('#image-container').addEventListener('mouseup', function(e){
-	dragEnd(e);
-});
-
-document.querySelector('#image-container').addEventListener('mouseleave', function(e){
-	dragEnd(e);
-});
-
-document.querySelector('#image-container').addEventListener('mousemove', function(e){
-	imageMove(e);
-});
-
+document.querySelector('#image-container').addEventListener('mousemove', imageMove);
