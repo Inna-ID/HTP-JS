@@ -6,35 +6,43 @@ let shift = {
 	y: 0
 }
 
+let currentImage;
+
 function dragStart(e) {
 	if(e.target.tagName != 'IMG' ) {
 		return;
 	}
-	e.target.setAttribute('src', catDragStart);
-	e.target.classList.add('mousedown');
 
+	currentImage = e.target;
+
+	currentImage.setAttribute('src', catDragStart);
+	currentImage.classList.add('mousedown');
+
+	// to move by any point of the image
 	// difference of coordinates relative to the mouse and the top left corner of the image
-	shift.y = e.clientY - e.target.getBoundingClientRect().top;
-	shift.x = e.clientX - e.target.getBoundingClientRect().left;
+	shift.y = e.clientY - currentImage.getBoundingClientRect().top;
+	shift.x = e.clientX - currentImage.getBoundingClientRect().left;
 }
 
 function dragEnd(e) {
-	if(e.target.tagName != 'IMG' ) {
+	if (!currentImage) {
 		return;
 	}
-	e.target.setAttribute('src', catDragEnd);
-	e.target.classList.remove('mousedown');
+	currentImage.setAttribute('src', catDragEnd);
+	currentImage.classList.remove('mousedown');
+
+	currentImage = null;
 }
 
 function imageMove(e) {
-	if(e.target.classList.contains('mousedown')) {
-
-		//разница смещения
-		e.target.style.top = `${e.pageY - shift.y}px`;
-		e.target.style.left = `${e.pageX - shift.x}px`;
+	if (!currentImage) {
+		return;
 	}
+	
+	// current mouse position - difference of mouse position and top left corner of the image at start
+	currentImage.style.top = `${e.pageY - shift.y}px`;
+	currentImage.style.left = `${e.pageX - shift.x}px`;
 }
-
 
 
 document.querySelector('#image-container').addEventListener('mousedown', dragStart);
