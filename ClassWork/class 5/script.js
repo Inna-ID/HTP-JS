@@ -31,21 +31,13 @@ function createMenu(menuObj) {
 		ul.appendChild(li);
 		
 		var sub;
-
 		if(key.submenu != undefined) {
 			sub = createMenu(key.submenu);
 			console.log(sub);
-
+			li.appendChild(sub);
 		}
-		li.appendChild(sub);
-
 	}
 	return ul;
-
-	
 }
+
 document.querySelector('body').appendChild(createMenu(menuObj));
-
-
-//createMenu(menuObj);
-//HW 30
