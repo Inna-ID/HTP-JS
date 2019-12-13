@@ -30,11 +30,8 @@ function createMenu(menuObj) {
 		li.appendChild(link);
 		ul.appendChild(li);
 		
-		var sub;
-		if(key.submenu != undefined) {
-			sub = createMenu(key.submenu);
-			console.log(sub);
-			li.appendChild(sub);
+		if(key.submenu) {
+			li.appendChild(createMenu(key.submenu));
 		}
 	}
 	return ul;
