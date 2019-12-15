@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>HW 6</title>
+	<style>
+		#clock {
+			color: #291763;
+			font-size: 24px;
+			font-weight: 600;
+			position: absolute;
+			top: 60px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.round {
+			position: relative;
+			width: 300px;
+			height: 300px;
+    		background: radial-gradient(#919de4 10%, #d9e6f5 60%, #5d51c1 80%);
+			border-radius: 50%;
+		}
+		.arrows {
+			position: relative;
+    		height: 150px;
+		}
+		.arrows:after {
+			position: absolute;
+			content: '';
+			width: 10px;
+			height: 10px;
+			left: 50%;
+			bottom: -5px;
+    		margin-left: -5px;
+			background: #000;
+			border-radius: 50%;
+		}
+		.arrow {
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			background: #000;
+			transform-origin: bottom center;	
+		}
+		.hour-arrow {
+			width: 3px;
+			height: 90px;
+			transform: rotate(150deg);
+		}
+		.min-arrow {
+			width: 2px;
+			height: 100px;
+			transform: rotate(10deg);
+		}
+		.sec-arrow {
+			width: 1px;
+			height: 120px;
+			transform: rotate(210deg);
+		}
+
+		/*  nums  */
+		.numbers {
+			position: absolute;
+			width: 100%;
+		    height: 280px;
+		    top: 10px;
+		    left: 0;
+		}
+		.num-wrap {
+			position: absolute;
+			width: 1px;
+			height: 140px;
+
+			top: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			transform-origin: bottom center;
+		}
+
+		.num-round {
+			width: 30px;
+			height: 30px;
+			background: #543e9a;
+			border-radius: 50%;
+			position: absolute;
+			left: 50%;
+		    top: 0;
+		    transform: translateX(-50%);
+			display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
+		.num-round span {
+			color: #fff;
+			font-size: 18px;
+		}
+		
+
+	</style>
+</head>
+<body>
+	<div class="round-wrap">
+		
+		<div class="round">
+			<div id="clock"></div>
+			<div class="numbers"></div>
+			<div class="arrows">
+				<div class="arrow hour-arrow"></div>
+				<div class="arrow min-arrow"></div>
+				<div class="arrow sec-arrow"></div>
+			</div>
+			
+		</div>
+	</div>
+
+	<script src="script.js"></script>
+</body>
+</html>
