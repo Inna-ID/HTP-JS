@@ -24,7 +24,7 @@ function getTime() {
 
 
 function writeTime(h, m, s) {
-	var container = document.getElementById('clock');
+	var container = document.getElementById('time');
 	var h = h < 10 ? `0${h}` : h;
 	var m = m < 10 ? `0${m}` : m;
 	var s = s < 10 ? `0${s}` : s;
