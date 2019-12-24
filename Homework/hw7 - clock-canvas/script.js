@@ -56,17 +56,17 @@ function drawArrows() {
 		arrowHour = {
 			length: R - 20,
 			lineWidth: 6,
-			alpha: (-getTime().hour * 30) - 180
+			alpha: ( (-getTime().hour * 30) - getTime().minute * 30/60) - 180
 		},
 		arrowMinute = {
 			length: R - 15,
 			lineWidth: 4,
-			alpha: (-getTime().minute * 6) - 180
+			alpha: ( (-getTime().minute * 6) - getTime().second * 6/60) - 180
 		},
 		arrowSecond = {
 			length: R - 8,
 			lineWidth: 2,
-			alpha: (-getTime().second * 6) -180
+			alpha: (- getTime().second * 6) -180
 		}
 	]
 
