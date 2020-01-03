@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="css/libs.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/libs.min.js"></script>
+    <script src="js/main.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="record-player">
+        <div class="vinyl-record-container">
+            <div class="vinyl-record">
+                <div class="flare"></div>
+                <div class="title-block">
+                    <svg viewBox="0 0 70 70" width="70%">
+                        <defs>
+                            <path d="M35,35m-23,0a23,23 0 1,1 46,0a23,23 0 1,1 -46,0" fill="lightpink" id="tophalf" />
+                        </defs>
+                        <text>
+                            <textPath xlink:href="#tophalf" fill="#fff" startOffset="5%">Author and Name of song
+                            </textPath>
+                        </text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- controls -->
+        <div class="buttons">
+            <div class="button">
+                <button class="play-stop" id="play-stop"></button>
+                <span>PLAY/STOP</span>
+            </div>
+        </div>                
+    </div>
+
+    <!-- audio -->
+    <audio id="audio1" preload="auto">
+        <!-- <source src="audio/music.ogg" type="audio/ogg; codecs=vorbis"> -->
+        <source src="The_Beatles_Yesterday.mp3" type="audio/mp3">
+        Тег audio не поддерживается вашим браузером. 
+        <a href="audio/music.mp3">Скачайте музыку</a>
+    </audio>
+
+</body>
+
+</html>
+<!-- <svg width="80%" height="80%" viewBox="0 0 2 2" preserveAspectRatio="none">
+                <linearGradient id="linear-gradient"
+                gradientTransform="rotate(120)">
+                    <stop offset="0%" stop-color="transparent"/>
+                    <stop offset="10%" stop-color="transparent"/>
+                    <stop offset="40%" stop-color="rgba(207, 207, 213, .3)" />
+                    <stop offset="50%" stop-color="rgba(207, 207, 213, .5)" />
+                    <stop offset="60%" stop-color="rgba(207, 207, 213, .3)" />
+                    <stop offset="80%" stop-color="transparent"/>
+                    <stop offset="90%" stop-color="transparent"/>
+                    <stop offset="100%" stop-color="transparent"/>
+                </linearGradient>
+                <polygon fill="url(#linear-gradient)" points="0,2 1,0 2,2" />
+            </svg> -->
