@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
         var blackRound = 'rgb(0, 0, 0) 23.2%, rgb(3, 6, 3) 24.2%, rgb(28, 28, 29) 24.3%, rgb(3, 6, 3) 24.4%,' +
         'rgb(0, 0, 0) 25.2%, rgb(28, 28, 29) 25.4%, rgb(3, 6, 3) 25.4%, rgb(13, 12, 14) 26%, rgb(55, 60, 59) 26.2%, rgb(47, 51, 46) 26.5%, rgb(62, 62, 63) 26.9%,';
         var gr = blackRound;
-
+ 
         var blackend = 'rgb(31, 32, 34) 68.9%, rgb(13, 16, 13) 69%, rgb(0, 0, 0) 70.3%, rgb(45, 50, 49) 70.4%, rgb(23, 26, 23) 70.5%';
 
         //array of strings
