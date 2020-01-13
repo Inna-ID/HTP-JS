@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>HW 8</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		.wrapper {
+			width: 600px;
+		}
+		.btn {
+			font-weight: 600;
+			padding: 10px 30px;
+		}
+		.score {
+			font-weight: 600;
+			font-size: 25px;
+			text-align: center;
+		}
+		.field {
+			position: relative;
+			background: #ccc;
+		}
+		.ball {
+			position: absolute;
+			width: 50px;
+			height: 50px;
+			background: red;
+			border-radius: 50%;
+		}
+		.racket {
+			/*position: absolute;*/
+			top: 0;
+			width: 20px;
+			height: 100px;
+			transition: .5s ease;
+		}
+		#racket1 {
+			float: left;
+			/*left: 0;*/
+			background: green;
+		}
+		#racket2 {
+			float: right;
+			/*top: calc(100% - 100px);*/
+			/*right: 0;*/
+			background: blue;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrapper">	
+		<button id="start" class="btn">Stars</button>
+		<p class="score">3:1</p>
+
+		<div class="field">
+			<div id="racket1" class="racket"></div>
+			<div id="racket2" class="racket"></div>
+			<div id="ball" class="ball"></div>
+		</div>
+	</div>
+
+	<script src="script.js"></script>
+</body>
+</html>
