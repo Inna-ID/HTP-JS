@@ -88,3 +88,52 @@ function tick() {
 ball.update();
 
 sratnBtn.onclick = start;
+
+
+let racket = {
+	left: document.getElementById('racket1'),
+	right: document.getElementById('racket2'),
+	left_Y: function() {return this.left.offsetTop},
+	right_Y: document.getElementById('racket2').offsetTop,
+	speed: 10
+}
+
+
+
+function keyPressHandler(e) {
+	let {left: leftRacket, right: rightRacket, left_Y, right_Y, speed} = racket;
+	// let leftRacket = document.getElementById('racket1');
+	// let rightRacket = document.getElementById('racket2');
+	// let leftTopVal = racket.left.offsetTop;
+	// let rightTopVal = racket.right.offsetTop;
+	//let speed = 10;
+
+
+	//racket.left_Y()
+	console.log(left_Y);
+	console.log(left_Y());
+	//to top shift
+	if(e.keyCode === 16 && left_Y() >= speed) {
+		console.log('shift');
+		leftRacket.style.top = `${left_Y() - speed}px`;
+	}
+	// to bottom ctrl
+	if(e.keyCode === 17 && left_Y() <= 300 - speed) {
+		console.log('ctrl');
+		leftRacket.style.top = `${left_Y() + speed}px`;
+	}
+	// to top arrow
+	if(e.keyCode === 38 && right_Y >= speed) {
+		rightRacket.style.top = `${right_Y - speed}px`;
+	}
+	// to bottom arrow
+	if(e.keyCode === 40 && right_Y <= 300 - speed) {
+		rightRacket.style.top = `${right_Y + speed}px`;
+	}
+}
+
+document.addEventListener('keydown', keyPressHandler );
+
+function checkRacketBallOverlap() {
+
+}
