@@ -62,8 +62,7 @@ function keyPressHandler(e) {
 }
 
 
-function checkRacketBallOverlap() {
-	//let left_Y = racket.left_Y();
+function isBallTouchRacket() {
 	let right_Y = racket.right_Y();
 	let leftRacket = {
 		y0: racket.left_Y(),
@@ -71,41 +70,38 @@ function checkRacketBallOverlap() {
 		x: 20
 	}
 	let ball = {
-		//elem: ballElem,
 		y0: ballElem.offsetTop,
 		y1: ballElem.offsetTop + 50,
 		x: ballElem.offsetLeft
 	}
-
-
-	console.log('racket space from' + leftRacket.y0 + 'to ' + leftRacket.y1);
-	console.log('ball space' + ball.y0);
-	//если мяч входит в зону ракетки
+	// console.log('racket space from' + leftRacket.y0 + 'to ' + leftRacket.y1);
+	// console.log('ball space' + ball.y0);
+	
+	// the ball entered into racket zone, need to push it away
 	if(ball.y0 >= leftRacket.y0 && ball.y1 <= leftRacket.y1 && ball.x == leftRacket.x) {
 		console.log('вошел в зону')
+		return true;
+	} else {
+		return false;
 	}
 }
 
-function start() {
-	// плавное движение - от 25 кадр/сек, 1000мс/25к=40мс
-	//setInterval(tick, 25)
-    requestAnimationFrame(tick);
-}
 
 function tick() {
 	ball.posX += ball.speedX;
 	//ball.speedY += ball.accelY;
 	ball.posY += ball.speedY;
 	//the ball has gone beyond the field ?
+
 	//right borders
-	if(ball.posX + ball.diameter > FIELD.width) {
+	if( (ball.posX + ball.diameter > FIELD.width)) {
 		// set reverse speed
 		ball.speedX = -ball.speedX;
 		//move to reverse side
 		ball.posX = FIELD.width - ball.diameter;
 	}
 	//left borders
-	if(ball.posX < 0) {
+	if( (ball.posX < 0 || isBallTouchRacket())) {
 		ball.speedX = -ball.speedX;
 		ball.posX = 0;
 	}
@@ -121,26 +117,15 @@ function tick() {
 		ball.posY = 0;
 	}
 
-	//ускорение
-	// var underFloor = ball.posY + ball.diameter - FIELD.height;
- //    if(underFloor>0) {
- //        ball.speedY = -ball.speedY;
- //        ball.posY -= underFloor*2; // корректируем позицию
- //    }
-
-	// if(accel) {
-	// 	console.log('ускорился');
-	// 	ball.speedX += ball.accelX;
-	// }
-
-	// if(!(ball.posX > 100)) {
-	// 	console.log('замедляемся');
-	// 	ball.speedX += ball.accelX - 0.5;
-	// }
-
 	ball.update();
 	requestAnimationFrame(tick);
-	requestAnimationFrame(checkRacketBallOverlap);
+}
+
+
+function startGame() {
+	// плавное движение - от 25 кадр/сек, 1000мс/25к=40мс
+	//setInterval(tick, 25)
+    requestAnimationFrame(tick);
 }
 
 
@@ -150,4 +135,4 @@ window.addEventListener('keydown', keyPressHandler );
 
 ball.update();
 
-sratnBtn.addEventListener('click', start);
+sratnBtn.addEventListener('click', startGame);
