@@ -1,13 +1,14 @@
-let field = document.getElementsByClassName('field')[0];
 let ballElem = document.getElementById('ball');
 let sratnBtn = document.getElementById('start');
 
 const FIELD = {
+	element: document.getElementsByClassName('field')[0],
 	width: 600,
 	height: 400
 }
 
-let ball = {	
+let ball = {
+	element: document.getElementById('ball'),
 	diameter: 50,
 	speedX: 5,
 	speedY: 1,
@@ -17,8 +18,8 @@ let ball = {
 	posY: FIELD.height / 2 - 25,
 
 	update: function() {		
-		ballElem.style.left = Math.round(this.posX) + 'px';
-		ballElem.style.top = Math.round(this.posY) + 'px';
+		this.element.style.left = Math.round(this.posX) + 'px';
+		this.element.style.top = Math.round(this.posY) + 'px';
 	}
 }
 
@@ -63,10 +64,15 @@ function keyPressHandler(e) {
 
 
 function isBallTouchRacket() {
-	let right_Y = racket.right_Y();
+	//let right_Y = racket.right_Y();
 	let leftRacket = {
 		y0: racket.left_Y(),
 		y1: racket.left_Y() + 100,
+		x: 20
+	}
+	let rightRacket = {
+		y0: racket.right_Y(),
+		y1: racket.right_Y() + 100,
 		x: 20
 	}
 	let ball = {
@@ -78,7 +84,7 @@ function isBallTouchRacket() {
 	// console.log('ball space' + ball.y0);
 	
 	// the ball entered into racket zone, need to push it away
-	if(ball.y0 >= leftRacket.y0 && ball.y1 <= leftRacket.y1 && ball.x == leftRacket.x) {
+	if( ball.y1 >= leftRacket.y0 && ball.y0 <= leftRacket.y1 && ball.x == leftRacket.x ) {
 		console.log('вошел в зону')
 		return true;
 	} else {
@@ -92,18 +98,21 @@ function tick() {
 	//ball.speedY += ball.accelY;
 	ball.posY += ball.speedY;
 	//the ball has gone beyond the field ?
+	
 
 	//right borders
-	if( (ball.posX + ball.diameter > FIELD.width)) {
+	if( ball.posX + ball.diameter > FIELD.width || isBallTouchRacket() ) {
 		// set reverse speed
 		ball.speedX = -ball.speedX;
 		//move to reverse side
-		ball.posX = FIELD.width - ball.diameter;
+		//ball.posX = FIELD.width - ball.diameter;
+
+		isBallTouchRacket() ? ball.posX = FIELD.width - ball.diameter - 21 : ball.posX = FIELD.width - ball.diameter;
 	}
 	//left borders
-	if( (ball.posX < 0 || isBallTouchRacket())) {
+	if( ball.posX < 0 || isBallTouchRacket() ) {
 		ball.speedX = -ball.speedX;
-		ball.posX = 0;
+		isBallTouchRacket() ? ball.posX = 21 : ball.posX = 0;
 	}
 
 	//bottom borders
@@ -122,6 +131,11 @@ function tick() {
 }
 
 
+function countScore() {
+	
+}
+
+
 function startGame() {
 	// плавное движение - от 25 кадр/сек, 1000мс/25к=40мс
 	//setInterval(tick, 25)
@@ -129,7 +143,7 @@ function startGame() {
 }
 
 
-init(field, FIELD.width, FIELD.height);
+init(FIELD.element, FIELD.width, FIELD.height);
 
 window.addEventListener('keydown', keyPressHandler );
 
