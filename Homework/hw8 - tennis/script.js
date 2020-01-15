@@ -17,6 +17,9 @@ let ball = {
 	posX: FIELD.width / 2 - 25,
 	posY: FIELD.height / 2 - 25,
 
+	y0: function() {return this.offsetTop},
+	y1: function() {return this.offsetTop + this.diameter},
+	x: function() {return this.offsetLeft},
 	update: function() {		
 		this.element.style.left = Math.round(this.posX) + 'px';
 		this.element.style.top = Math.round(this.posY) + 'px';
@@ -27,9 +30,29 @@ let racket = {
 	left: document.getElementById('racket1'),
 	right: document.getElementById('racket2'),
 	speed: 10,
-	left_Y: function() {return this.left.offsetTop},
-	right_Y: function() {return this.right.offsetTop},
+	left_X: 20,
+	right_X: 580,
+	left_Y0: function() {return this.left.offsetTop},
+	left_Y1: function() {return this.left.offsetTop + 100},
+	right_Y0: function() {return this.right.offsetTop},
+	right_Y1: function() {return this.right.offsetTop + 100},
 }
+	// let leftRacket = {
+	// 	y0: racket.left_Y(),
+	// 	y1: racket.left_Y() + 100,
+	// 	x: 20
+	// }
+	// let rightRacket = {
+	// 	y0: racket.right_Y(),
+	// 	y1: racket.right_Y() + 100,
+	// 	x: 20
+	// }
+	// let ball = {
+	// 	y0: ballElem.offsetTop,
+	// 	y1: ballElem.offsetTop + 50,
+	// 	x: ballElem.offsetLeft
+	// }
+
 
 
 function init(elem, w, h) {
@@ -90,6 +113,8 @@ function isBallTouchRacket() {
 	} else {
 		return false;
 	}
+
+
 }
 
 
@@ -101,13 +126,13 @@ function tick() {
 	
 
 	//right borders
-	if( ball.posX + ball.diameter > FIELD.width || isBallTouchRacket() ) {
+	if( ball.posX + ball.diameter > FIELD.width ) {
 		// set reverse speed
 		ball.speedX = -ball.speedX;
 		//move to reverse side
-		//ball.posX = FIELD.width - ball.diameter;
+		ball.posX = FIELD.width - ball.diameter;
 
-		isBallTouchRacket() ? ball.posX = FIELD.width - ball.diameter - 21 : ball.posX = FIELD.width - ball.diameter;
+		//isBallTouchRacket() ? ball.posX = FIELD.width - ball.diameter - 21 : ball.posX = FIELD.width - ball.diameter;
 	}
 	//left borders
 	if( ball.posX < 0 || isBallTouchRacket() ) {
