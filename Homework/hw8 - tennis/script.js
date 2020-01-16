@@ -1,5 +1,6 @@
-let ballElem = document.getElementById('ball');
 let sratnBtn = document.getElementById('start');
+let isPlaying = false;
+let timer;
 
 const FIELD = {
 	element: document.getElementsByClassName('field')[0],
@@ -19,7 +20,8 @@ let ball = {
 
 	y0: function() {return this.element.offsetTop},
 	y1: function() {return this.element.offsetTop + this.diameter},
-	x: function() {return this.element.offsetLeft},
+	x0: function() {return this.element.offsetLeft},
+	x1: function() {return this.element.offsetLeft + this.diameter},
 	update: function() {		
 		this.element.style.left = Math.round(this.posX) + 'px';
 		this.element.style.top = Math.round(this.posY) + 'px';
@@ -33,7 +35,7 @@ let racket = {
 	leftScore: 0,
 	rightScore: 0,
 	left_X: 20,
-	right_X: 580 - ball.diameter,
+	right_X: 580,
 	left_Y0: function() {return this.left.offsetTop},
 	left_Y1: function() {return this.left.offsetTop + 100},
 	right_Y0: function() {return this.right.offsetTop},
@@ -72,13 +74,17 @@ function keyPressHandler(e) {
 }
 
 
-function isBallTouchRacket(racket_x, racket_y0, racket_y1) {
-	// the ball entered into racket zone, need to push it away
-	if( ball.y1() >= racket_y0 && ball.y0() <= racket_y1 && ball.x() == racket_x ) {
-		console.log('попал в ракетку')
-		countScore(racket_x);
-		return true;
-	} else {
+function isBallTouchRacket(isLeft, racket_x, racket_y0, racket_y1) {
+
+	// the ball in any racket zone
+	if( ball.y1() >= racket_y0 && ball.y0() <= racket_y1) {
+		//is it left racket
+		if( (isLeft && ball.x0() <= racket_x) || (!isLeft && ball.x1() >= racket_x) ) {
+			countScore(racket_x);
+			return true;
+		}
+	}
+	else {
 		return false;
 	}
 }
@@ -91,15 +97,15 @@ function tick() {
 
 	//the ball has gone beyond the field ?
 	//right borders
-	let isRightRacketTouch = isBallTouchRacket(racket.right_X, racket.right_Y0(), racket.right_Y1() );
+	let isRightRacketTouch = isBallTouchRacket(false, racket.right_X, racket.right_Y0(), racket.right_Y1() );
 	if( ball.posX + ball.diameter > FIELD.width || isRightRacketTouch ) {
-		// set reverse speed
+		// need to stop the ball
 		ball.speedX = -ball.speedX;
-		//move to reverse side
+		
 		isRightRacketTouch ? ball.posX = FIELD.width - ball.diameter - 21 : ball.posX = FIELD.width - ball.diameter;
 	}
 	//left borders
-	let isLeftRacketTouch = isBallTouchRacket(racket.left_X, racket.left_Y0(), racket.left_Y1() );
+	let isLeftRacketTouch = isBallTouchRacket(true, racket.left_X, racket.left_Y0(), racket.left_Y1() );
 	if( ball.posX < 0 || isLeftRacketTouch) {
 		ball.speedX = -ball.speedX;
 		isLeftRacketTouch ? ball.posX = 21 : ball.posX = 0;
@@ -130,21 +136,12 @@ function countScore(racketPos) {
 function startGame() {
 	// плавное движение - от 25 кадр/сек, 1000мс/25к=40мс
 	//setInterval(tick, 25)
-
-	// надо замкнуть isPlaying и timer
-	let isPlaying = false;
-	var timer;
-
-	function setTimer(isPl, _timer) {
-		if(!isPl) {
-			isPl = true;
-			_timer = requestAnimationFrame(tick);
-		} else {
-			cancelAnimationFrame(_timer);
-		}
+	if(!isPlaying) {
+		isPlaying = true;
+		timer = requestAnimationFrame(tick);
+	} else {
+		cancelAnimationFrame(timer);
 	}
-
-	setTimer(isPlaying, timer)
 }
 
 
