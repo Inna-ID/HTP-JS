@@ -1,6 +1,5 @@
 let sratnBtn = document.getElementById('start');
 let isPlaying = false;
-let timer;
 
 const FIELD = {
 	element: document.getElementsByClassName('field')[0],
@@ -42,6 +41,24 @@ let racket = {
 	right_Y1: function() {return this.right.offsetTop + 100},
 }
 
+let leftRacket = {
+	elem: document.getElementById('racket1'),
+	speed: 10,
+	score: 0,
+	x: 20,
+	y0: function() {return this.elem.offsetTop},
+	y1: function() {return this.elem.offsetTop + 100},
+}
+
+let rightRacket = {
+	elem: document.getElementById('racket2'),
+	speed: 10,
+	score: 0,
+	x: 580,
+	y0: function() {return this.elem.offsetTop},
+	y1: function() {return this.elem.offsetTop + 100},
+}
+
 
 function init(elem, w, h) {
 	elem.style.width = w + 'px';
@@ -53,14 +70,12 @@ function keyPressHandler(e) {
 	let left_Y = racket.left_Y0();
 	let right_Y = racket.right_Y0();
 
-	//to top shift 16
+	//to top shift 16 (w=87)
 	if(e.keyCode === 87 && left_Y >= speed) {
-		console.log('shift');
 		leftRacket.style.top = `${left_Y - speed}px`;
 	}
-	// to bottom ctrl 17
+	// to bottom ctrl 17 (s=83)
 	if(e.keyCode === 83 && left_Y <= 300 - speed) {
-		console.log('ctrl');
 		leftRacket.style.top = `${left_Y + speed}px`;
 	}
 	// to top arrow
@@ -78,7 +93,7 @@ function isBallTouchRacket(isLeft, racket_x, racket_y0, racket_y1) {
 
 	// the ball in any racket zone
 	if( ball.y1() >= racket_y0 && ball.y0() <= racket_y1) {
-		//is it left racket
+		//is it left racket or is it right
 		if( (isLeft && ball.x0() <= racket_x) || (!isLeft && ball.x1() >= racket_x) ) {
 			return true;
 		}
@@ -95,44 +110,67 @@ function tick() {
 	let isLeftRacker = true;
 
 	//the ball has gone beyond the field ?
-	//right borders
-	let isRightRacketTouch = isBallTouchRacket(!isLeftRacker, racket.right_X, racket.right_Y0(), racket.right_Y1() );
-	if( ball.posX + ball.diameter > FIELD.width || isRightRacketTouch ) {
-		// need to stop the ball
-		ball.speedX = -ball.speedX;
-		
-		isRightRacketTouch ? ball.posX = FIELD.width - ball.diameter - 21 : ball.posX = FIELD.width - ball.diameter;
-		// if racket don't beat off the ball goal
-		countScore(!isLeftRacker);
+	//left borders	
+	if( ball.posX < 0) {
+		let isBallTouch = isBallTouchRacket(isLeftRacker, racket.left_X, racket.left_Y0(), racket.left_Y1() );
+		if(isBallTouch) {
+			beatOffBallOnRacketTouch(21)
+		} else {
+			ball.posX = 0;
+			//зачислить гол правой ракетке
+			countScore(false);
+			stopGame();
+		}
 	}
-	//left borders
-	let isLeftRacketTouch = isBallTouchRacket(isLeftRacker, racket.left_X, racket.left_Y0(), racket.left_Y1() );
-	if( ball.posX < 0 || isLeftRacketTouch) {
-		ball.speedX = -ball.speedX;
-		isLeftRacketTouch ? ball.posX = 21 : ball.posX = 0;
-		// if racket don't beat off the ball goal
-		countScore(isLeftRacker);
+	
+	//right borders	
+	if( ball.posX + ball.diameter > FIELD.width) {
+		let isBallTouch = isBallTouchRacket(!isLeftRacker, racket.right_X, racket.right_Y0(), racket.right_Y1() );
+		if(isBallTouch) {
+			beatOffBallOnRacketTouch(FIELD.width - ball.diameter - 21)
+		} else {
+			ball.posX = FIELD.width - ball.diameter;
+			//зачислить гол правой ракетке
+			countScore(true);
+			stopGame();
+		}
 	}
 
 	//bottom borders
 	if(ball.posY + ball.diameter > FIELD.height) {
-		ball.speedY = -ball.speedY;
-		ball.posY = FIELD.height - ball.diameter;
+		beatOffBallOnTopBottom(FIELD.height - ball.diameter)
 	}
 	//top borders
 	if(ball.posY < 0) {
-		ball.speedY = -ball.speedY;
-		ball.posY = 0;
+		beatOffBallOnTopBottom(0);
 	}
 
 	ball.update();
-	requestAnimationFrame(tick);
+	if(isPlaying) {
+		requestAnimationFrame(tick);
+	}
 }
 
 
-function countScore(isLeftRacket) {
+function beatOffBallOnRacketTouch(posX) {
+	ball.speedX = -ball.speedX;
+	ball.posX = posX;
+}
+
+function beatOffBallOnTopBottom(posY) {
+	ball.speedY = -ball.speedY;
+	ball.posY = posY;
+}
+
+function stopGame() {
+	isPlaying = false;
+}
+
+
+
+function countScore(isLeftRacketScoreGoal) {
 	// if the isLeftRacket == false (it is rigth racket) don't beat off the ball goal will be credited to the left racket
-	isLeftRacket ? racket.rightScore +=1 : racket.leftScore +=1;
+	isLeftRacketScoreGoal ? racket.leftScore +=1 : racket.rightScore +=1;
 	console.log(`green ${racket.leftScore} : ${racket.rightScore} blue`);
 	document.getElementsByClassName('score')[0].innerText = `${racket.leftScore}:${racket.rightScore}`;
 }
@@ -151,10 +189,10 @@ function startGame() {
 
 	if(!isPlaying) {
 		isPlaying = true;
-		timer = requestAnimationFrame(tick);
-	} else {
+		requestAnimationFrame(tick);
+	} 
+	else {
 		isPlaying = false;
-		cancelAnimationFrame(timer);
 	}
 }
 
