@@ -80,7 +80,6 @@ function isBallTouchRacket(isLeft, racket_x, racket_y0, racket_y1) {
 	if( ball.y1() >= racket_y0 && ball.y0() <= racket_y1) {
 		//is it left racket
 		if( (isLeft && ball.x0() <= racket_x) || (!isLeft && ball.x1() >= racket_x) ) {
-			countScore(racket_x);
 			return true;
 		}
 	}
@@ -92,23 +91,27 @@ function isBallTouchRacket(isLeft, racket_x, racket_y0, racket_y1) {
 
 function tick() {
 	ball.posX += ball.speedX;
-	//ball.speedY += ball.accelY;
 	ball.posY += ball.speedY;
+	let isLeftRacker = true;
 
 	//the ball has gone beyond the field ?
 	//right borders
-	let isRightRacketTouch = isBallTouchRacket(false, racket.right_X, racket.right_Y0(), racket.right_Y1() );
+	let isRightRacketTouch = isBallTouchRacket(!isLeftRacker, racket.right_X, racket.right_Y0(), racket.right_Y1() );
 	if( ball.posX + ball.diameter > FIELD.width || isRightRacketTouch ) {
 		// need to stop the ball
 		ball.speedX = -ball.speedX;
 		
 		isRightRacketTouch ? ball.posX = FIELD.width - ball.diameter - 21 : ball.posX = FIELD.width - ball.diameter;
+		// if racket don't beat off the ball goal
+		countScore(!isLeftRacker);
 	}
 	//left borders
-	let isLeftRacketTouch = isBallTouchRacket(true, racket.left_X, racket.left_Y0(), racket.left_Y1() );
+	let isLeftRacketTouch = isBallTouchRacket(isLeftRacker, racket.left_X, racket.left_Y0(), racket.left_Y1() );
 	if( ball.posX < 0 || isLeftRacketTouch) {
 		ball.speedX = -ball.speedX;
 		isLeftRacketTouch ? ball.posX = 21 : ball.posX = 0;
+		// if racket don't beat off the ball goal
+		countScore(isLeftRacker);
 	}
 
 	//bottom borders
@@ -127,19 +130,30 @@ function tick() {
 }
 
 
-function countScore(racketPos) {
-	racketPos === 20 ? racket.rightScore +=1 : racket.leftScore +=1;
-	console.log(`green ${racket.leftScore} : ${racket.rightScore } blue`)
+function countScore(isLeftRacket) {
+	// if the isLeftRacket == false (it is rigth racket) don't beat off the ball goal will be credited to the left racket
+	isLeftRacket ? racket.rightScore +=1 : racket.leftScore +=1;
+	console.log(`green ${racket.leftScore} : ${racket.rightScore} blue`);
+	document.getElementsByClassName('score')[0].innerText = `${racket.leftScore}:${racket.rightScore}`;
 }
 
+
+function random( min,  max ) {
+	return Math.floor(Math.random()*(max - min + 1) + min);
+}
 
 function startGame() {
 	// плавное движение - от 25 кадр/сек, 1000мс/25к=40мс
 	//setInterval(tick, 25)
+
+	random(-1, 0) < 0 ? ball.speedX = -ball.speedX : ball.speedX;
+	random(-1, 0) < 0 ? ball.speedY = -ball.speedY : ball.speedY;
+
 	if(!isPlaying) {
 		isPlaying = true;
 		timer = requestAnimationFrame(tick);
 	} else {
+		isPlaying = false;
 		cancelAnimationFrame(timer);
 	}
 }
