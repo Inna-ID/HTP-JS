@@ -4,32 +4,35 @@ let isPlaying = false;
 const FIELD = {
 	element: document.getElementsByClassName('field')[0],
 	width: 600,
-	height: 400
+	height: 400,
+	centerX: 300,
+	centerY: 200
 }
 
 let ball = {
 	element: document.getElementById('ball'),
 	diameter: 50,
-	speedX: 5,
+	speedX: 4,
 	speedY: 1,
-	accelY : .5,
-	accelX : 2,
-	initX: FIELD.width / 2 - 25,
-	initY: FIELD.height / 2 - 25,
+	posX: FIELD.centerX,
+	posY: FIELD.centerY,
 
-	y0: function() {return this.element.offsetTop},
-	y1: function() {return this.element.offsetTop + this.diameter},
 	x0: function() {return this.element.offsetLeft},
 	x1: function() {return this.element.offsetLeft + this.diameter},
-	update: function(ballPosX, ballPosY) {
-		this.element.style.left = Math.round(ballPosX) + 'px';
-		this.element.style.top = Math.round(ballPosY) + 'px';
+	y0: function() {return this.element.offsetTop},
+	y1: function() {return this.element.offsetTop + this.diameter},
+	updatePos: function(x, y) {
+		this.posX = x;
+		this.posY = y;
+		this.element.style.left = Math.round(this.posX) + 'px';
+		this.element.style.top = Math.round(this.posY) + 'px';
 	}
 }
 
 
 let leftRacket = {
 	elem: document.getElementById('racket1'),
+	width: 20,
 	speed: 10,
 	score: 0,
 	x: 20,
@@ -39,6 +42,7 @@ let leftRacket = {
 
 let rightRacket = {
 	elem: document.getElementById('racket2'),
+	width: 20,
 	speed: 10,
 	score: 0,
 	x: 580,
@@ -71,7 +75,7 @@ function isBallTouchRacket(racket_x, racket_y0, racket_y1) {
 	// the ball in any racket zone
 	if(ball.y0() <= racket_y1 && ball.y1() >= racket_y0) {
 		//is it left racket or is it right
-		if( (racket_x == 20 && ball.x0() <= racket_x) || (!racket_x == 20 && ball.x1() >= racket_x) ) {
+		if( (racket_x == 20 && ball.x0() <= racket_x) || (racket_x != 20 && ball.x1() >= racket_x) ) {
 			return true;
 		}
 	}
@@ -82,48 +86,42 @@ function isBallTouchRacket(racket_x, racket_y0, racket_y1) {
 
 
 function tick() {
-	let ballPosX = ball.element.offsetLeft;
-	let ballPosY = ball.element.offsetTop;
-	ballPosX += ball.speedX;
-	ballPosY += ball.speedY;
+	ball.posX += ball.speedX;
+	ball.posY += ball.speedY;
 
 	//the ball has gone beyond the field ?
-	//left borders	
-	if( ball.x0() < 0) {
-		let isBallTouch = isBallTouchRacket(leftRacket.x, leftRacket.y0(), leftRacket.y1() );
-		if(isBallTouch) {
-			beatOffBallOnRacketTouch(21);
-		} else {
-			ballPosX = 0;
-			//зачислить гол правой ракетке
-			countScore(false);
-			stopGame();
-		}
+	//left borders
+	let isBallTouchLR = isBallTouchRacket(leftRacket.x, leftRacket.y0(), leftRacket.y1() );
+	if(isBallTouchLR) {
+		beatOffBallOnRacketTouch(leftRacket.width +1);
+	} else if(ball.x0() <= 0) {
+		ball.posX = 0;		
+		//зачислить гол правой ракетке
+		countScore(false);
+		stopGame();
 	}
 	
 	//right borders
-	if( ball.x1() > FIELD.width) {
-		let isBallTouch = isBallTouchRacket(rightRacket.x, rightRacket.y0(), rightRacket.y1() );
-		if(isBallTouch) {
-			beatOffBallOnRacketTouch(FIELD.width - ball.diameter - 21);
-		} else {
-			ballPosX = FIELD.width - ball.diameter;
-			//зачислить гол правой ракетке
-			countScore(true);
-			stopGame();
-		}
+	let isBallTouchRR = isBallTouchRacket(rightRacket.x, rightRacket.y0(), rightRacket.y1() );
+	if(isBallTouchRR) {
+		beatOffBallOnRacketTouch(FIELD.width - ball.diameter - rightRacket.width -1);
+	} else if(ball.x1() >= FIELD.width) {
+		ball.posX = FIELD.width - ball.diameter;
+		//зачислить гол правой ракетке
+		countScore(true);
+		stopGame();
 	}
 
 	//bottom borders
-	if(ballPosY + ball.diameter > FIELD.height) {
-		beatOffBallOnTopBottom(FIELD.height - ball.diameter)
+	if(ball.posY + ball.diameter > FIELD.height) {
+		beatOffBallOnTopBottom(FIELD.height - ball.diameter);
 	}
 	//top borders
-	if(ballPosY < 0) {
+	if(ball.posY < 0) {
 		beatOffBallOnTopBottom(0);
 	}
 
-	ball.update(ballPosX, ballPosY);
+	ball.updatePos(ball.posX, ball.posY);
 	if(isPlaying) {
 		requestAnimationFrame(tick);
 	}
@@ -132,12 +130,12 @@ function tick() {
 
 function beatOffBallOnRacketTouch(posX) {
 	ball.speedX = -ball.speedX;
-	ball.element.offsetLeft = posX;
+	ball.posX = posX;
 }
 
 function beatOffBallOnTopBottom(posY) {
 	ball.speedY = -ball.speedY;
-	ball.element.offsetTop = posY;
+	ball.posY = posY;
 }
 
 
@@ -157,6 +155,8 @@ function startGame() {
 	// плавное движение - от 25 кадр/сек, 1000мс/25к=40мс
 	//setInterval(tick, 25)
 
+    ball.updatePos(FIELD.centerX-25, FIELD.centerY-25);
+
 	random(-1, 0) < 0 ? ball.speedX = -ball.speedX : ball.speedX;
 	random(-1, 0) < 0 ? ball.speedY = -ball.speedY : ball.speedY;
 
@@ -173,19 +173,14 @@ function stopGame() {
 	isPlaying = false;
 }
 
-function initGame(field, ball) {
-	field.element.style.width = field.width + 'px';
-	field.element.style.height = field.height + 'px';
+function initGame() {
+	FIELD.element.style.width = FIELD.width + 'px';
+	FIELD.element.style.height = FIELD.height + 'px';
 
-	ball.element.style.left = ball.initX + 'px';
-	ball.element.style.top = ball.initY + 'px';
+	ball.updatePos(FIELD.centerX-25, FIELD.centerY-25);
 }
 
 
-initGame(FIELD, ball);
-
+initGame();
 window.addEventListener('keydown', keyPressHandler );
-
-//ball.update();
-
 sratnBtn.addEventListener('click', startGame);
