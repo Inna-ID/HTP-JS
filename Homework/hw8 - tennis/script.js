@@ -14,32 +14,19 @@ let ball = {
 	speedY: 1,
 	accelY : .5,
 	accelX : 2,
-	posX: FIELD.width / 2 - 25,
-	posY: FIELD.height / 2 - 25,
+	initX: FIELD.width / 2 - 25,
+	initY: FIELD.height / 2 - 25,
 
 	y0: function() {return this.element.offsetTop},
 	y1: function() {return this.element.offsetTop + this.diameter},
 	x0: function() {return this.element.offsetLeft},
 	x1: function() {return this.element.offsetLeft + this.diameter},
-	update: function() {		
-		this.element.style.left = Math.round(this.posX) + 'px';
-		this.element.style.top = Math.round(this.posY) + 'px';
+	update: function(ballPosX, ballPosY) {
+		this.element.style.left = Math.round(ballPosX) + 'px';
+		this.element.style.top = Math.round(ballPosY) + 'px';
 	}
 }
 
-let racket = {
-	left: document.getElementById('racket1'),
-	right: document.getElementById('racket2'),
-	speed: 10,
-	leftScore: 0,
-	rightScore: 0,
-	left_X: 20,
-	right_X: 580,
-	left_Y0: function() {return this.left.offsetTop},
-	left_Y1: function() {return this.left.offsetTop + 100},
-	right_Y0: function() {return this.right.offsetTop},
-	right_Y1: function() {return this.right.offsetTop + 100},
-}
 
 let leftRacket = {
 	elem: document.getElementById('racket1'),
@@ -60,41 +47,31 @@ let rightRacket = {
 }
 
 
-function init(elem, w, h) {
-	elem.style.width = w + 'px';
-	elem.style.height = h + 'px';
-}
-
 function keyPressHandler(e) {
-	let {left: leftRacket, right: rightRacket, speed} = racket;
-	let left_Y = racket.left_Y0();
-	let right_Y = racket.right_Y0();
-
 	//to top shift 16 (w=87)
-	if(e.keyCode === 87 && left_Y >= speed) {
-		leftRacket.style.top = `${left_Y - speed}px`;
+	if(e.keyCode === 87 && leftRacket.y0() >= leftRacket.speed) {
+		leftRacket.elem.style.top = `${leftRacket.y0() - leftRacket.speed}px`;
 	}
 	// to bottom ctrl 17 (s=83)
-	if(e.keyCode === 83 && left_Y <= 300 - speed) {
-		leftRacket.style.top = `${left_Y + speed}px`;
+	if(e.keyCode === 83 && FIELD.height - leftRacket.y1() >= leftRacket.speed) {
+		leftRacket.elem.style.top = `${leftRacket.y0() + leftRacket.speed}px`;
 	}
 	// to top arrow
-	if(e.keyCode === 38 && right_Y >= speed) {
-		rightRacket.style.top = `${right_Y - speed}px`;
+	if(e.keyCode === 38 && rightRacket.y0() >= rightRacket.speed) {
+		rightRacket.elem.style.top = `${rightRacket.y0() - rightRacket.speed}px`;
 	}
 	// to bottom arrow
-	if(e.keyCode === 40 && right_Y <= 300 - speed) {
-		rightRacket.style.top = `${right_Y + speed}px`;
+	if(e.keyCode === 40 && FIELD.height - rightRacket.y1() >= rightRacket.speed) {
+		rightRacket.elem.style.top = `${rightRacket.y0() + rightRacket.speed}px`;
 	}
 }
 
 
-function isBallTouchRacket(isLeft, racket_x, racket_y0, racket_y1) {
-
+function isBallTouchRacket(racket_x, racket_y0, racket_y1) {
 	// the ball in any racket zone
-	if( ball.y1() >= racket_y0 && ball.y0() <= racket_y1) {
+	if(ball.y0() <= racket_y1 && ball.y1() >= racket_y0) {
 		//is it left racket or is it right
-		if( (isLeft && ball.x0() <= racket_x) || (!isLeft && ball.x1() >= racket_x) ) {
+		if( (racket_x == 20 && ball.x0() <= racket_x) || (!racket_x == 20 && ball.x1() >= racket_x) ) {
 			return true;
 		}
 	}
@@ -105,31 +82,32 @@ function isBallTouchRacket(isLeft, racket_x, racket_y0, racket_y1) {
 
 
 function tick() {
-	ball.posX += ball.speedX;
-	ball.posY += ball.speedY;
-	let isLeftRacker = true;
+	let ballPosX = ball.element.offsetLeft;
+	let ballPosY = ball.element.offsetTop;
+	ballPosX += ball.speedX;
+	ballPosY += ball.speedY;
 
 	//the ball has gone beyond the field ?
 	//left borders	
-	if( ball.posX < 0) {
-		let isBallTouch = isBallTouchRacket(isLeftRacker, racket.left_X, racket.left_Y0(), racket.left_Y1() );
+	if( ball.x0() < 0) {
+		let isBallTouch = isBallTouchRacket(leftRacket.x, leftRacket.y0(), leftRacket.y1() );
 		if(isBallTouch) {
-			beatOffBallOnRacketTouch(21)
+			beatOffBallOnRacketTouch(21);
 		} else {
-			ball.posX = 0;
+			ballPosX = 0;
 			//зачислить гол правой ракетке
 			countScore(false);
 			stopGame();
 		}
 	}
 	
-	//right borders	
-	if( ball.posX + ball.diameter > FIELD.width) {
-		let isBallTouch = isBallTouchRacket(!isLeftRacker, racket.right_X, racket.right_Y0(), racket.right_Y1() );
+	//right borders
+	if( ball.x1() > FIELD.width) {
+		let isBallTouch = isBallTouchRacket(rightRacket.x, rightRacket.y0(), rightRacket.y1() );
 		if(isBallTouch) {
-			beatOffBallOnRacketTouch(FIELD.width - ball.diameter - 21)
+			beatOffBallOnRacketTouch(FIELD.width - ball.diameter - 21);
 		} else {
-			ball.posX = FIELD.width - ball.diameter;
+			ballPosX = FIELD.width - ball.diameter;
 			//зачислить гол правой ракетке
 			countScore(true);
 			stopGame();
@@ -137,15 +115,15 @@ function tick() {
 	}
 
 	//bottom borders
-	if(ball.posY + ball.diameter > FIELD.height) {
+	if(ballPosY + ball.diameter > FIELD.height) {
 		beatOffBallOnTopBottom(FIELD.height - ball.diameter)
 	}
 	//top borders
-	if(ball.posY < 0) {
+	if(ballPosY < 0) {
 		beatOffBallOnTopBottom(0);
 	}
 
-	ball.update();
+	ball.update(ballPosX, ballPosY);
 	if(isPlaying) {
 		requestAnimationFrame(tick);
 	}
@@ -154,25 +132,20 @@ function tick() {
 
 function beatOffBallOnRacketTouch(posX) {
 	ball.speedX = -ball.speedX;
-	ball.posX = posX;
+	ball.element.offsetLeft = posX;
 }
 
 function beatOffBallOnTopBottom(posY) {
 	ball.speedY = -ball.speedY;
-	ball.posY = posY;
+	ball.element.offsetTop = posY;
 }
-
-function stopGame() {
-	isPlaying = false;
-}
-
 
 
 function countScore(isLeftRacketScoreGoal) {
 	// if the isLeftRacket == false (it is rigth racket) don't beat off the ball goal will be credited to the left racket
-	isLeftRacketScoreGoal ? racket.leftScore +=1 : racket.rightScore +=1;
-	console.log(`green ${racket.leftScore} : ${racket.rightScore} blue`);
-	document.getElementsByClassName('score')[0].innerText = `${racket.leftScore}:${racket.rightScore}`;
+	isLeftRacketScoreGoal ? leftRacket.score +=1 : rightRacket.score +=1;
+	console.log(`green ${leftRacket.score} : ${rightRacket.score} blue`);
+	document.getElementsByClassName('score')[0].innerText = `${leftRacket.score}:${rightRacket.score}`;
 }
 
 
@@ -196,11 +169,23 @@ function startGame() {
 	}
 }
 
+function stopGame() {
+	isPlaying = false;
+}
 
-init(FIELD.element, FIELD.width, FIELD.height);
+function initGame(field, ball) {
+	field.element.style.width = field.width + 'px';
+	field.element.style.height = field.height + 'px';
+
+	ball.element.style.left = ball.initX + 'px';
+	ball.element.style.top = ball.initY + 'px';
+}
+
+
+initGame(FIELD, ball);
 
 window.addEventListener('keydown', keyPressHandler );
 
-ball.update();
+//ball.update();
 
 sratnBtn.addEventListener('click', startGame);
