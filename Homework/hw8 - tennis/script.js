@@ -53,11 +53,11 @@ let rightRacket = {
 
 function keyPressHandler(e) {
 	//to top shift 16 (w=87)
-	if(e.keyCode === 87 && leftRacket.y0() >= leftRacket.speed) {
+	if(e.keyCode === 16 && leftRacket.y0() >= leftRacket.speed) {
 		leftRacket.elem.style.top = `${leftRacket.y0() - leftRacket.speed}px`;
 	}
 	// to bottom ctrl 17 (s=83)
-	if(e.keyCode === 83 && FIELD.height - leftRacket.y1() >= leftRacket.speed) {
+	if(e.keyCode === 17 && FIELD.height - leftRacket.y1() >= leftRacket.speed) {
 		leftRacket.elem.style.top = `${leftRacket.y0() + leftRacket.speed}px`;
 	}
 	// to top arrow
@@ -147,14 +147,13 @@ function countScore(isLeftRacketScoreGoal) {
 }
 
 
-function random( min,  max ) {
+function random(min,  max) {
 	return Math.floor(Math.random()*(max - min + 1) + min);
 }
 
 function startGame() {
 	// плавное движение - от 25 кадр/сек, 1000мс/25к=40мс
 	//setInterval(tick, 25)
-
     ball.updatePos(FIELD.centerX-25, FIELD.centerY-25);
 
 	random(-1, 0) < 0 ? ball.speedX = -ball.speedX : ball.speedX;
@@ -163,7 +162,7 @@ function startGame() {
 	if(!isPlaying) {
 		isPlaying = true;
 		requestAnimationFrame(tick);
-	} 
+	}
 	else {
 		isPlaying = false;
 	}
