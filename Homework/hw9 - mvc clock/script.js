@@ -1,14 +1,10 @@
-"use strict";
-
 // model
 let time = {
 	ms: new Date().getTime(),
-	msPerSecond: 1000,
-	msPerMinute: 6000,
 	msPerHour: 3600000,
+	msPerMinute: 6000,
+	msPerSecond: 1000,
 	// gtm: 3,
-	// start: false,
-	// stop: true,
 	convertMS: function() {
 		return {
 			hour: Math.floor(this.ms / this.msPerHour),
@@ -28,7 +24,33 @@ let time = {
 setInterval(time.updateTime, 1000);
 
 
-// view
+function ClockModel() {
+	this.ms = new Date().getTime();
+	this.msPerHour = 3600000;
+	this.msPerMinute = 6000;
+	this.msPerSecond = 1000;
+
+	let viewInstance = null;
+
+	this.init = function(view) {
+		viewInstance = view;
+	}
+
+	this.updateView = function() {
+		if(viewInstance) {
+			viewInstance.update();
+		}
+	}
+
+	this.getTime() {
+		this.ms = new Date().getTime();
+		this.updateView()
+	}
+}
+
+
+
+////////// view
 let pageView = {
 	update: function(curTime) {
 		document.getElementsByClassName('time')[0].innerHTML = `${curTime.hour} : ${curTime.minute} : ${curTime.second}`;
