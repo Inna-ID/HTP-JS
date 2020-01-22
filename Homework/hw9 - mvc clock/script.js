@@ -59,15 +59,18 @@ let pageView = {
 
 function ClockView() {
 	let modelInstance = null;
-	let clockElement = null;
+	let clockBlock = null;
+	let timeDiv = null;
 
-	this.init = function(model, field) {
+	this.init = function(model, clock) {
 		modelInstance = model;
-		clockElement = field;
+		clockBlock = clock;
+
+		timeDiv = clockBlock.querySelector('.time');
 	}
 
 	this.update = function() {
-		
+		timeDiv.innerHTML = `${curTime.hour} : ${curTime.minute} : ${curTime.second}`;
 	}
 }
 
