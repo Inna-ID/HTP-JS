@@ -42,7 +42,7 @@ function ClockModel() {
 		}
 	}
 
-	this.getTime() {
+	this.getTime = function() {
 		this.ms = new Date().getTime();
 		this.updateView()
 	}
@@ -56,6 +56,22 @@ let pageView = {
 		document.getElementsByClassName('time')[0].innerHTML = `${curTime.hour} : ${curTime.minute} : ${curTime.second}`;
 	}
 }
+
+function ClockView() {
+	let modelInstance = null;
+	let clockElement = null;
+
+	this.init = function(model, field) {
+		modelInstance = model;
+		clockElement = field;
+	}
+
+	this.update = function() {
+		
+	}
+}
+
+
 
 
 // controller
