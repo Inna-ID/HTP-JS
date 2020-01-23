@@ -108,6 +108,27 @@ function ClockController() {
 
 // setup and initialisation
 // create components
+let cities = [
+	{city: 'New York', gmt: -5},
+	{city: 'London', gmt: 0},
+	{city: 'Berlin', gmt: 1},
+	{city: 'Minsk',	gmt: 3},	
+	{city: 'Tokio', gmt: 9},
+	{city: 'Vladivostok', gmt: 10}
+]
+
+
+function createDomElements() {
+	let divClock = document.createElement('div');
+	let btnStart = document.createElement('button');
+	let btnStop = document.createElement('button');
+
+	cities.forEach(function(item, i, arr) {
+		document.getElementsByClassName('clocks-wrap')[0]
+	})
+}
+
+
 let model1 = new ClockModel();
 let view1 = new ClockView();
 let controller1 = new ClockController();
@@ -115,12 +136,9 @@ let controller1 = new ClockController();
 //point the component at each other and DOM elemtnt
 let containerClock1 = document.getElementById('clock1');
 
-let time = [
-	{sity: 'Minsk',	gmt: 3},
-	{sity: 'London', gmt: 0}
-]
 
-model1.init(view1, time[0].gmt);
+
+model1.init(view1, cities[0].gmt);
 view1.init(model1, containerClock1);
 controller1.init(model1, containerClock1);
 
