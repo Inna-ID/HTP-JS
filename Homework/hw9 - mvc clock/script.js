@@ -1,90 +1,128 @@
 // model
-let time = {
-	ms: new Date().getTime(),
-	msPerHour: 3600000,
-	msPerMinute: 6000,
-	msPerSecond: 1000,
-	// gtm: 3,
-	convertMS: function() {
-		return {
-			hour: Math.floor(this.ms / this.msPerHour),
-			minute: Math.floor(this.ms / this.msPerMinute),
-			second: Math.floor(this.ms / this.msPerHour)
-		}
-	},
-	updateView: function() {
-		let date = this.convertMS();
-		pageView.update(date);
-	},
-	updateTime: function() {
-		this.ms = new Date().getTime();
-		this.updateView();
-	}
-}
-setInterval(time.updateTime, 1000);
-
-
 function ClockModel() {
-	this.ms = new Date().getTime();
-	this.msPerHour = 3600000;
-	this.msPerMinute = 6000;
-	this.msPerSecond = 1000;
+	let self = this;
+	self.ms = new Date().getTime(); // from 1970
+	self.msPerHour = 3600000;
+	self.msPerMinute = 60000;
+	self.msPerSecond = 1000;
 
 	let viewInstance = null;
+	let timerId =  null;
+	let gmt = null;
 
-	this.init = function(view) {
+	self.init = function(view, gmt) {
 		viewInstance = view;
+		gmt = gmt;
 	}
 
-	this.updateView = function() {
+	self.updateView = function() {
 		if(viewInstance) {
-			viewInstance.update();
+			viewInstance.update(self.convertMS(gmt));
 		}
 	}
 
-	this.getTime = function() {
-		this.ms = new Date().getTime();
-		this.updateView()
+	self.convertMS = function(gmt) {
+		
+		console.log( new Date().getUTCHours() + ':' + new Date().getUTCMinutes());
+		let now = new Date();
+		let utcNow = new Date(now.getUTCFullYear(),  now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds())
+		let msUTC = utcNow.getTime();
+		console.log('UTC: ' + utcNow) // correct UTC time but wrong timezone!
+		console.log('UTC (in ms): ' + utcNow.getTime())
+
+		let msGTM2 = msUTC + (self.msPerHour * 2);
+		console.log(`${0}:${msGTM2.getMinutes}:${msGTM2 / 1000}`)
+
+		console.log(`${utcNow.getHours()}:${utcNow.getMinutes()}:${utcNow.getSeconds()}`)
+		
+
+		return {
+			hours: utcNow.getHours() + gmt,
+			minutes: utcNow.getMinutes(),
+			seconds: utcNow.getSeconds()
+		}
+		
+	}
+
+	self.getTime = function() {
+		self.ms = new Date().getTime();
+		self.updateView()
+	}
+
+	self.start = function() {
+		timerId = setInterval(self.getTime, 1000);
+	}
+	self.stop = function() {
+		clearInterval(timerId);
 	}
 }
 
 
 
 ////////// view
-let pageView = {
-	update: function(curTime) {
-		document.getElementsByClassName('time')[0].innerHTML = `${curTime.hour} : ${curTime.minute} : ${curTime.second}`;
-	}
-}
-
 function ClockView() {
 	let modelInstance = null;
-	let clockBlock = null;
+	let clockContainer = null;
 	let timeDiv = null;
 
-	this.init = function(model, clock) {
+	this.init = function(model, container) {
 		modelInstance = model;
-		clockBlock = clock;
+		clockContainer = container;
 
-		timeDiv = clockBlock.querySelector('.time');
+		timeDiv = clockContainer.querySelector('.time');
 	}
 
-	this.update = function() {
-		timeDiv.innerHTML = `${curTime.hour} : ${curTime.minute} : ${curTime.second}`;
+	this.update = function(time) {
+		timeDiv.innerHTML = `${time.hours} : ${time.minutes} : ${time.seconds}`;
 	}
 }
 
 
 
 
-// controller
-function updateTimeContr() {
-	//передавать gtm
-	time.updateTime();
+///// controller
+function ClockController() {
+	let modelInstance = null;
+	let clockContainer = null;
+	let timeDiv = null;
+
+	this.init = function(model, container) {
+		modelInstance = model;
+		clockContainer = container;
+
+		timeDiv = clockContainer.querySelector('.time');
+		let btnStart = clockContainer.querySelector('.startBtn');
+		let btnStop = clockContainer.querySelector('.stopBtn');
+
+		btnStart.addEventListener('click', this.start);
+		btnStop.addEventListener('click', this.stop);
+	}
+
+	this.start = function() {
+		modelInstance.start()
+	}
+	this.stop = function() {
+		modelInstance.stop()
+	}
 }
 
+// setup and initialisation
+// create components
+let model1 = new ClockModel();
+let view1 = new ClockView();
+let controller1 = new ClockController();
 
-document.getElementsByClassName('startBtn')[0].addEventListener('click', updateTimeContr)
-//document.getElementsByClassName('stopBtn')[0];
+//point the component at each other and DOM elemtnt
+let containerClock1 = document.getElementById('clock1');
 
-time.updateView();
+let time = [
+	{sity: 'Minsk',	gmt: 3},
+	{sity: 'London', gmt: 0}
+]
+
+model1.init(view1, time[0].gmt);
+view1.init(model1, containerClock1);
+controller1.init(model1, containerClock1);
+
+//init the first Model in View displaying
+model1.updateView();
