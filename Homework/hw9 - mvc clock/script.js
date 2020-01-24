@@ -1,53 +1,50 @@
 // model
 function ClockModel() {
 	let self = this;
-	self.ms = new Date().getTime(); // from 1970
+	this.msUTC = null; //ms from 1970
+	this.msGTM = null; // gtm in ms (example -5 = )
 	self.msPerHour = 3600000;
 	self.msPerMinute = 60000;
 	self.msPerSecond = 1000;
-
+	this.time = {};
 	let viewInstance = null;
 	let timerId =  null;
-	let gmt = null;
+	let msGTM = null;
 
-	self.init = function(view, gmt) {
+	self.init = function(view, gmt=0) {
 		viewInstance = view;
-		gmt = gmt;
+		this.msGTM = gmt * this.msPerHour;
 	}
 
-	self.updateView = function() {
+	this.setUTCms = function() {
+		this.msUTC = new Date().getTime() + (new Date().getTimezoneOffset() * this.msPerMinute);		
+	}
+
+	this.msUTCPlusGMTConvertToDate = function() {
+		//if(!(this.msUTC || this.msGTM)) {return}
+		let gmtDate = new Date(this.msUTC + this.msGTM);
+		this.time = {
+			hours: gmtDate.getHours(),
+			minutes: gmtDate.getMinutes(),
+			seconds: gmtDate.getSeconds()
+		}
+	}
+
+	this.getTime = function() {
+		//get utc time in ms
+		self.setUTCms();
+		// convert utc time in gtm and then to date
+		self.msUTCPlusGMTConvertToDate();
+		// call update view with
+		self.updateView();
+	}
+
+	this.updateView = function() {
 		if(viewInstance) {
-			viewInstance.update(self.convertMS(gmt));
+			viewInstance.update(this.time);
 		}
 	}
 
-	self.convertMS = function(gmt) {
-		
-		console.log( new Date().getUTCHours() + ':' + new Date().getUTCMinutes());
-		let now = new Date();
-		let utcNow = new Date(now.getUTCFullYear(),  now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds())
-		let msUTC = utcNow.getTime();
-		console.log('UTC: ' + utcNow) // correct UTC time but wrong timezone!
-		console.log('UTC (in ms): ' + utcNow.getTime())
-
-		let msGTM2 = msUTC + (self.msPerHour * 2);
-		console.log(`${0}:${msGTM2.getMinutes}:${msGTM2 / 1000}`)
-
-		console.log(`${utcNow.getHours()}:${utcNow.getMinutes()}:${utcNow.getSeconds()}`)
-		
-
-		return {
-			hours: utcNow.getHours() + gmt,
-			minutes: utcNow.getMinutes(),
-			seconds: utcNow.getSeconds()
-		}
-		
-	}
-
-	self.getTime = function() {
-		self.ms = new Date().getTime();
-		self.updateView()
-	}
 
 	self.start = function() {
 		timerId = setInterval(self.getTime, 1000);
@@ -119,14 +116,55 @@ let cities = [
 
 
 function createDomElements() {
-	let divClock = document.createElement('div');
-	let btnStart = document.createElement('button');
-	let btnStop = document.createElement('button');
+	let clockWrap = document.getElementsByClassName('clocks-wrap')[0];
 
 	cities.forEach(function(item, i, arr) {
-		document.getElementsByClassName('clocks-wrap')[0]
+	let divClock = document.createElement('div');
+	divClock.id = `clock${i+1}`;
+
+	let btnStart = document.createElement('button');
+	btnStart.className = 'startBtn';
+	btnStart.innerHTML = 'Start';
+
+	let btnStop = document.createElement('button');
+	btnStop.className = 'stopBtn';
+	btnStop.innerHTML = 'Stop';
+
+	let pCityName = document.createElement('p');
+	pCityName.className = 'name';
+	pCityName.innerHTML = item.city;
+
+	let pTime = document.createElement('p');
+	pTime.className = 'time';
+		
+	
+	clockWrap.appendChild(divClock);
+	divClock.appendChild(btnStart);
+	divClock.appendChild(btnStop);
+	divClock.appendChild(pCityName);
+	divClock.appendChild(pTime);
 	})
 }
+
+createDomElements();
+
+// function createInstances() {
+// 	cities.forEach(function(item, i, arr) {
+// 		let `model${i+1}` = new ClockModel();
+// 		let `view${i+1}` = new ClockView();
+// 		let `controller${i+1}` = new ClockController();
+
+// 		//point the component at each other and DOM elemtnt
+// 		let `containerClock${i+1}` = document.getElementById(`clock${i+1}`);
+
+// 		`model${i+1}`.init(`view${i+1}`, cities[i].gmt);
+// 		`view${i+1}`.init(`model${i+1}`, `containerClock${i+1}`);
+// 		`controller${i+1}`.init(`model${i+1}`, `containerClock${i+1}`);
+
+// 		`model${i+1}`.getTime();
+// 	}
+// }
+//createInstances();
 
 
 let model1 = new ClockModel();
@@ -137,10 +175,10 @@ let controller1 = new ClockController();
 let containerClock1 = document.getElementById('clock1');
 
 
-
 model1.init(view1, cities[0].gmt);
 view1.init(model1, containerClock1);
 controller1.init(model1, containerClock1);
 
 //init the first Model in View displaying
-model1.updateView();
+
+model1.getTime();
