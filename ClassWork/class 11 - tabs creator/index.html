@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CW 10</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		.tab {
+			display: inline-block;
+			/*position: relative;*/
+			padding: 10px 15px;
+			border-radius: 3px;
+			background: rgba(0,0,255, .5);
+			color: #fff;
+			margin: 4px;
+		}
+
+		.tabs-container {
+			display: flex;
+			flex-wrap: wrap;
+			width: 300px;
+			min-height: 54px;
+			padding: 4px;
+			border-radius: 5px;
+			background: rgba(255,255,0, .2);
+		}
+
+		.close {
+			position: relative;
+			display: inline-block;
+			width: 8px;
+			height: 8px;
+			top: -10px;
+			right: -12px;
+			padding: 1px 1px 2px 1px;
+			border-radius: 2px;
+			background: rgba(255,255,255, .3);
+		}
+		.close:before {
+			position: absolute;
+			content: '';
+			top: 5px;
+			left: 1px;
+			width: 8px;
+			height: 1px;
+			background: #fff;
+			transform: rotate(-45deg);
+		}
+		.close:after {
+			position: absolute;
+			content: '';
+			top: 5px;
+			left: 1px;
+			width: 8px;
+			height: 1px;
+			background: #fff;
+			transform: rotate(45deg);
+		}
+	</style>
+
+</head>
+<body>
+	<input class="" id="tab-tag" type="text">
+	<div class="tabs-container">
+	</div>
+	
+
+	<script src="script.js"></script>
+</body>
+</html>
