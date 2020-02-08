@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CW 10</title>
+	<script src="jquery-3.4.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		
+		body, html {
+			width: 100%;
+			height: 100%;
+		}
+
+		.wrapper {
+			background: #ccc;
+			width: 100%;
+			height: 100%;
+		}
+
+		.modal-window {
+			width: 600px;
+			/*height: 300px;*/
+			border-radius: 20px;
+			background: #fff;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 2;
+		}
+
+		.modal-window .content {
+			padding: 40px 20px;
+		}
+		
+		button {
+			padding: 5px 20px;
+		}
+
+		.shadow {
+			display: none;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			background: rgba(0,0,0,.5);
+			z-index: 1;
+		}
+
+		.close-btn {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			background: #000;
+			color: #fff;
+			border: none;
+    		padding: 0;
+    		position: absolute;
+    		top: 0;
+    		right: 0;
+		}
+		form {
+			display: none;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 30px;
+		}
+
+		form.active {
+			display: flex;
+		}
+
+		form button {
+			margin-top: 40px;
+		}
+
+		.toggle-form {
+			margin-top: 20px;
+			border: none;
+			margin-left: auto;
+    		margin-right: auto;
+    		display: block;
+		}
+
+	</style>
+
+</head>
+<body>
+	<div class="wrapper">
+		<button class="open-btn">Open modal</button>
+		<div class="shadow">
+			<div class="modal-window">
+				<button class="close-btn">X</button>
+				<div class="content">
+					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+
+					<button class="toggle-form">Register</button>
+					<form id="login-form" class="active" action="">
+						<label for="login-input">Login</label>
+						<input id="login-input" name="login" type="text">
+						<label for="password-input">Password</label>
+						<input id="password-input" name="password" type="password">
+						<button type="button">Send</button>
+					</form>
+
+					<form id="register-form" action="">
+						<label for="reg-login-input">Login2</label>
+						<input id="reg-login-input" name="login" type="text">
+						<label for="reg-email-input">Email2</label>
+						<input id="reg-email-input" name="email" type="email">						
+						<label for="reg-password-input">Password</label>
+						<input id="reg-password-input" name="password" type="password">
+						<button type="button">Send</button>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+	<script src="script.js"></script>
+</body>
+</html>
